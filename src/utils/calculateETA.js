@@ -1,38 +1,13 @@
-export function calculateETA(
-  distanceKm,
-  speedKmh = 40
-) {
-  if (
-    !Number.isFinite(distanceKm) ||
-    distanceKm < 0
-  ) {
-    return null;
-  }
+export function calculateDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371;
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
 
-  if (
-    !Number.isFinite(speedKmh) ||
-    speedKmh <= 0
-  ) {
-    return null;
-  }
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) ** 2;
 
-  const timeHours =
-    distanceKm / speedKmh;
-
-  const timeMinutes =
-    timeHours * 60;
-
-  return Math.ceil(timeMinutes);
-}
-
-export function formatETA(minutes) {
-  if (!Number.isFinite(minutes)) {
-    return "ETA unavailable";
-  }
-
-  if (minutes < 1) {
-    return "Less than 1 min";
-  }
-
-  return `${minutes} min`;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
