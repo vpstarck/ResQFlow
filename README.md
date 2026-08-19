@@ -65,7 +65,6 @@ The ambulance can then navigate to the source hospital and transfer the patient 
 
 ## 📁 Project Structure
 
-```text
 eZResQ/
 ├── public/
 ├── src/
@@ -88,7 +87,7 @@ eZResQ/
 ├── README.md
 └── index.html
 
-                         Basic Workflow
+## Basic Workflow
 
 
  Ambulance Login
