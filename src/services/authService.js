@@ -1,50 +1,73 @@
-export const loginDriver = async (
-  hospitalName,
-  ambulanceNumber,
-  driverPhone
+// src/services/authService.js
+
+import {
+  signInWithEmailAndPassword,
+  signOut
+} from "firebase/auth";
+
+import { auth } from "./firebase";
+
+/**
+ * Login user with email and password
+ */
+export const loginUser = async (
+  email,
+  password
 ) => {
   try {
-    const ambulanceRef = collection(db, "ambulances");
+    const userCredential =
+      await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
 
-    const q = query(
-      ambulanceRef,
-      where("hospitalName", "==", hospitalName),
-      where("ambulanceNumber", "==", ambulanceNumber),
-      where("driverPhone", "==", driverPhone)
-    );
-
-    const querySnapshot = await getDocs(q);
-
-    if (querySnapshot.empty) {
-      return {
-        success: false,
-        message: "Invalid login credentials"
-      };
-    }
-
-    const doc = querySnapshot.docs[0];
-
-    const ambulanceData = {
-      id: doc.id,
-      ...doc.data()
-    };
-
-    localStorage.setItem(
-      "currentDriver",
-      JSON.stringify(ambulanceData)
-    );
+    const user = userCredential.user;
 
     return {
       success: true,
-      data: ambulanceData
+      user,
     };
-
   } catch (error) {
     console.error("Login Error:", error);
 
     return {
       success: false,
-      message: error.message
+      message: error.message,
     };
   }
+};
+
+/**
+ * Logout current user
+ */
+export const logoutUser = async () => {
+  try {
+    await signOut(auth);
+
+    return {
+      success: true,
+    };
+  } catch (error) {
+    console.error("Logout Error:", error);
+
+    return {
+      success: false,
+      message: error.message,
+    };
+  }
+};
+
+/**
+ * Get current logged in user
+ */
+export const getCurrentUser = () => {
+  return auth.currentUser;
+};
+
+/**
+ * Check authentication status
+ */
+export const isAuthenticated = () => {
+  return !!auth.currentUser;
 };
